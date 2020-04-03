@@ -178,7 +178,8 @@ public class BinaryHeap<E extends Comparable<E>> implements PriorityQueue<E> {
         this.percolateDown(0);
         return minItem;
     }
-
+    
+    
     /**
      * Creates a multi-lines string representing a sorted view of this binary heap.
      * 
