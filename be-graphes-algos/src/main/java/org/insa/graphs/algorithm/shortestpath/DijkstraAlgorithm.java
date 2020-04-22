@@ -43,9 +43,13 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         tas.insert(origine);
         Label x=null;
 
+        //on dit aux observateurs que le premier process a commencé
+        this.notifyOriginProcessed(origine.getSommet_Courant());
+        
         while(!tas.isEmpty()&&destination.getMarque() == false) {
         	x = tas.deleteMin();
         	x.setMarque(true);
+        	this.notifyNodeReached(x.getSommet_Courant());
         	List<Arc> succ = x.getSommet_Courant().getSuccessors();
         	
         	for(Arc suc : succ) {
@@ -62,6 +66,7 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         if(destination.getMarque()==false) {
         	solution = new ShortestPathSolution(data, Status.INFEASIBLE);
         }else {
+        	this.notifyDestinationReached(destination.getSommet_Courant());
         	ArrayList<Arc> arcs = new ArrayList<Arc>();
         	while(!x.equals(origine)) {
         		arcs.add(x.getPere());
