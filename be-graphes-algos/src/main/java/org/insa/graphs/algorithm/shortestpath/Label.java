@@ -5,7 +5,7 @@ import org.insa.graphs.model.*;
 public class Label implements Comparable<Label>{
 	private Node sommet_courant;
 	private boolean marque;
-	private double cout;
+	protected double cout;
 	private Arc pere;
 	
 	public Label(Node sommet_courant) {
@@ -21,6 +21,10 @@ public class Label implements Comparable<Label>{
 
 	public double getCout() {
 		return this.cout;
+	}
+	
+	public double getCoutTotal() {
+		return this.getCout();
 	}
 	
 	public void setCout(double cout) {
@@ -44,12 +48,6 @@ public class Label implements Comparable<Label>{
 	}
 	
 	public int compareTo(Label label) {
-		if(this.cout<label.cout) {
-			return -1;
-		}else if (this.cout ==label.cout){
-			return 0;
-		}else {
-			return 1;
-		}
+		return Double.compare(this.getCoutTotal(), label.getCoutTotal());
 	}
 }
