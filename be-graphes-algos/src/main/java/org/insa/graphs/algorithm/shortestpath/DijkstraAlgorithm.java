@@ -52,7 +52,7 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         	//System.out.println("Cout visité :"+x.getCout());
         	this.notifyNodeReached(x.getSommet_Courant());
         	List<Arc> succ = x.getSommet_Courant().getSuccessors();
-        	//System.out.println("nbre sucesseurs :"+ succ.size());
+        	System.out.println("nbre sucesseurs :"+ succ.size()+"theoriquement : "+x.getSommet_Courant().getNumberOfSuccessors());
         	//int cpt2=0;
         	for(Arc suc : succ) {
         		//cpt2+=1;
@@ -100,6 +100,8 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
     		}
     		y.setCout(nouveau_cout);
     		y.setPere(pere);
+    		//System.out.println(tas);
+    		System.out.println("tas valide :"+tas.isValid(0));
     		tas.insert(y);
     	}
     	

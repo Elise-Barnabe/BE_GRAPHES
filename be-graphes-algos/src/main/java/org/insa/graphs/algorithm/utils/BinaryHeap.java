@@ -65,7 +65,11 @@ public class BinaryHeap<E extends Comparable<E>> implements PriorityQueue<E> {
     protected int indexLeft(int index) {
         return index * 2 + 1;
     }
-
+    
+    
+    protected int indexRight(int index) {
+    	return index*2+2;
+    }
     /**
      * Internal method to percolate up in the heap.
      * 
@@ -178,7 +182,36 @@ public class BinaryHeap<E extends Comparable<E>> implements PriorityQueue<E> {
         this.percolateDown(0);
         return minItem;
     }
+     
     
+    public boolean isValid(int index) {
+    	
+    	E element = this.array.get(index);
+    	int index_left = this.indexLeft(index);
+    	int index_right = this.indexRight(index);
+    	
+    	if(this.currentSize<=1) {
+    		return true;
+    	}
+    	
+    	//condition d'arret recursivité
+    	if(index_left>=this.currentSize) {
+    		return true;
+    	}
+    	
+    	if(element.compareTo(this.array.get(index_left))>0) {
+    		return false;
+    	}
+    	
+    	if(index_right < this.currentSize) {
+    		if(element.compareTo(this.array.get(index_right))>0) {
+    			return false;
+    		}
+    		return this.isValid(index_left) && this.isValid(index_left);
+    	}
+    	return this.isValid(index_left);
+    	
+    }
     
     /**
      * Creates a multi-lines string representing a sorted view of this binary heap.
