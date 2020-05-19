@@ -67,7 +67,8 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         	//System.out.println("nbre sucesseurs visités:"+ cpt2);
         }
         if(destination.getMarque()==false) {
-        	solution = new ShortestPathSolution(data, Status.INFEASIBLE);
+        	Node noeud_null = null;
+        	solution = new ShortestPathSolution(data, Status.INFEASIBLE, new Path(graph, noeud_null));
         }else {
         	this.notifyDestinationReached(destination.getSommet_Courant());
         	ArrayList<Arc> arcs = new ArrayList<Arc>();
