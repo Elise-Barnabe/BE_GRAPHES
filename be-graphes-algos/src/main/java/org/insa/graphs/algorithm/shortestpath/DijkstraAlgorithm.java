@@ -37,22 +37,24 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
     	BinaryHeap<Label> tas = new BinaryHeap<Label>();
         Label destination = labels[data.getDestination().getId()];
         Label origine =labels[data.getOrigin().getId()];
-        origine.setCout(0);
-        tas.insert(origine);
-        Label x=null;
+        
         
         //on dit aux observateurs que le premier process a commencé
         this.notifyOriginProcessed(origine.getSommet_Courant());
-        
+        if(destination.getSommet_Courant().equals(origine.getSommet_Courant())) {
+        	solution = new ShortestPathSolution (data, Status.INFEASIBLE);
+        }
+        origine.setCout(0);
+        tas.insert(origine);
+        Label x=null;
         int cpt =0;
-        while(!tas.isEmpty()&&destination.getMarque() == false) {
+        while(!tas.isEmpty()&&destination.getMarque() == false&&solution==null) {
         	cpt++;
         	x = tas.deleteMin();
         	x.setMarque(true);
-        	//System.out.println("Cout visité :"+x.getCout());
+        	System.out.println("Cout visité :"+x.getCout());
         	this.notifyNodeReached(x.getSommet_Courant());
         	List<Arc> succ = x.getSommet_Courant().getSuccessors();
-        	System.out.println("nbre sucesseurs :"+ succ.size()+"theoriquement : "+x.getSommet_Courant().getNumberOfSuccessors());
         	//int cpt2=0;
         	for(Arc suc : succ) {
         		//cpt2+=1;
@@ -66,9 +68,9 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         	}
         	//System.out.println("nbre sucesseurs visités:"+ cpt2);
         }
+        
         if(destination.getMarque()==false) {
-        	Node noeud_null = null;
-        	solution = new ShortestPathSolution(data, Status.INFEASIBLE, new Path(graph, noeud_null));
+        	solution = new ShortestPathSolution(data, Status.INFEASIBLE);
         }else {
         	this.notifyDestinationReached(destination.getSommet_Courant());
         	ArrayList<Arc> arcs = new ArrayList<Arc>();
@@ -82,9 +84,7 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
             solution = new ShortestPathSolution(data, Status.OPTIMAL, new Path(graph, arcs));
             
         }
-        if(solution.getPath().isValid()) {
-        	System.out.println("Le chemin est valide !");
-        }
+        
         return solution;
     }
     
@@ -102,7 +102,7 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
     		y.setCout(nouveau_cout);
     		y.setPere(pere);
     		//System.out.println(tas);
-    		System.out.println("tas valide :"+tas.isValid(0));
+    		//System.out.println("tas valide :"+tas.isValid(0));
     		tas.insert(y);
     	}
     	
