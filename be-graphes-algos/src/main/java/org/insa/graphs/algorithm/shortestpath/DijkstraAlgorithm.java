@@ -2,6 +2,7 @@ package org.insa.graphs.algorithm.shortestpath;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import org.insa.graphs.algorithm.AbstractSolution.Status;
@@ -10,6 +11,8 @@ import org.insa.graphs.algorithm.utils.ElementNotFoundException;
 import org.insa.graphs.model.*;
 
 public class DijkstraAlgorithm extends ShortestPathAlgorithm {
+	int compteur_sommets_entree_tas = 0;
+    int compteur_sommets_marques = 0;
 
     public DijkstraAlgorithm(ShortestPathData data) {
         super(data);
@@ -33,6 +36,7 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
     }
     
     public ShortestPathSolution do_D (Label[] labels, ShortestPathData data, Graph graph ) {
+    	long start = new Date().getTime();
     	ShortestPathSolution solution = null;
     	BinaryHeap<Label> tas = new BinaryHeap<Label>();
         Label destination = labels[data.getDestination().getId()];
@@ -52,7 +56,8 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
         	cpt++;
         	x = tas.deleteMin();
         	x.setMarque(true);
-        	System.out.println("Cout visité :"+x.getCout());
+        	compteur_sommets_marques++;
+        	//System.out.println("Cout visité :"+x.getCout());
         	this.notifyNodeReached(x.getSommet_Courant());
         	List<Arc> succ = x.getSommet_Courant().getSuccessors();
         	//int cpt2=0;
@@ -84,7 +89,10 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
             solution = new ShortestPathSolution(data, Status.OPTIMAL, new Path(graph, arcs));
             
         }
-        
+        long end = new Date().getTime();
+        long time = end - start;
+        System.out.println("Temps exécution en millisecondes :"+time+" taille solution :"+solution.getPath().size());
+        System.out.println("Sommets entrée tas :"+compteur_sommets_entree_tas+" sommets marqués :"+compteur_sommets_marques);
         return solution;
     }
     
@@ -104,6 +112,7 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
     		//System.out.println(tas);
     		//System.out.println("tas valide :"+tas.isValid(0));
     		tas.insert(y);
+    		compteur_sommets_entree_tas++;
     	}
     	
     }

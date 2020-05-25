@@ -3,6 +3,7 @@ package org.insa.graphs.algorithm.shortestpath;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 
 import org.insa.graphs.algorithm.AbstractSolution.Status;
 import org.insa.graphs.model.Arc;
@@ -18,7 +19,7 @@ public class BellmanFordAlgorithm extends ShortestPathAlgorithm {
 
     @Override
     protected ShortestPathSolution doRun() {
-
+    	
         // Retrieve the graph.
         ShortestPathData data = getInputData();
         Graph graph = data.getGraph();
@@ -93,7 +94,6 @@ public class BellmanFordAlgorithm extends ShortestPathAlgorithm {
             // Create the final solution.
             solution = new ShortestPathSolution(data, Status.OPTIMAL, new Path(graph, arcs));
         }
-
         return solution;
     }
 
