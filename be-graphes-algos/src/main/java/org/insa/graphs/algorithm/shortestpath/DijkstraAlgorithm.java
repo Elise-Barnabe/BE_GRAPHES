@@ -36,46 +36,47 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
     }
     
     public ShortestPathSolution do_D (Label[] labels, ShortestPathData data, Graph graph ) {
+    	
     	long start = new Date().getTime();
-    	ShortestPathSolution solution = null;
+
+        ShortestPathSolution solution=null;
     	BinaryHeap<Label> tas = new BinaryHeap<Label>();
-        Label destination = labels[data.getDestination().getId()];
-        Label origine =labels[data.getOrigin().getId()];
+    	
+    	int destination_id = data.getDestination().getId();
+    	int origine_id = data.getOrigin().getId();
+        Label destination = labels[destination_id];
+        Label origine =labels[origine_id];
         
         
         //on dit aux observateurs que le premier process a commencé
         this.notifyOriginProcessed(origine.getSommet_Courant());
-        if(destination.getSommet_Courant().equals(origine.getSommet_Courant())) {
-        	solution = new ShortestPathSolution (data, Status.INFEASIBLE);
-        }
+        
         origine.setCout(0);
         tas.insert(origine);
         Label x=null;
-        int cpt =0;
-        while(!tas.isEmpty()&&destination.getMarque() == false&&solution==null) {
-        	cpt++;
+        
+        if(destination_id != origine_id) {
+        	
+        
+        
+        while(!tas.isEmpty()&&destination.getMarque() == false) {
         	x = tas.deleteMin();
         	x.setMarque(true);
         	compteur_sommets_marques++;
-        	//System.out.println("Cout visité :"+x.getCout());
         	this.notifyNodeReached(x.getSommet_Courant());
         	List<Arc> succ = x.getSommet_Courant().getSuccessors();
-        	//int cpt2=0;
         	for(Arc suc : succ) {
-        		//cpt2+=1;
         		Label y = labels[suc.getDestination().getId()];
         		if((y.getMarque()==false) && data.isAllowed(suc)) {
-        			//if(y.getCout()>x.getCout()+data.getCost(suc)) {
-        				//y.setCout(x.getCoup()+suc.getLength());
         				update(tas, y,x, suc, data);
-        			//}	
         		}
         	}
-        	//System.out.println("nbre sucesseurs visités:"+ cpt2);
         }
         
-        if(destination.getMarque()==false) {
-        	solution = new ShortestPathSolution(data, Status.INFEASIBLE);
+        
+        if(labels[destination_id].getPere()==null) {
+        	Node nodeNull = null;
+        	solution = new ShortestPathSolution(data, Status.INFEASIBLE, new Path(data.getGraph(), nodeNull));
         }else {
         	this.notifyDestinationReached(destination.getSommet_Courant());
         	ArrayList<Arc> arcs = new ArrayList<Arc>();
@@ -89,10 +90,14 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
             solution = new ShortestPathSolution(data, Status.OPTIMAL, new Path(graph, arcs));
             
         }
+        }else {
+        	Path p = new Path(graph, data.getOrigin());
+        	solution = new ShortestPathSolution (data, Status.OPTIMAL, p);
+        }
         long end = new Date().getTime();
         long time = end - start;
-        System.out.println("Temps exécution en millisecondes :"+time+" taille solution :"+solution.getPath().size());
-        System.out.println("Sommets entrée tas :"+compteur_sommets_entree_tas+" sommets marqués :"+compteur_sommets_marques);
+        //System.out.println("Temps exécution en millisecondes :"+time+" taille solution :"+solution.getPath().size());
+        //System.out.println("Sommets entrée tas :"+compteur_sommets_entree_tas+" sommets marqués :"+compteur_sommets_marques);
         return solution;
     }
     

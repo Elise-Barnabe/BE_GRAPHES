@@ -25,29 +25,32 @@ import org.junit.Test;
 
 public class ShortestPathTest {
 	
-	protected static String mapCarre, mapInsa;
-	protected static DijkstraAlgorithm insaLongueurUne_L, insaLongueurUne_T, carreLongueurUne_L, carreLongueurUne_T, carreLongueurNormale_L, carreLongueurNormale_T, insaLongueurNulle_L, insaLongueurNulle_T, insaLongueurNormale_L, insaLongueurNormale_T;
-	protected static AStarAlgorithm carreLongueurUneL, carreLongueurUneT, insaLongueurUneL, insaLongueurUneT, carreLongueurNormaleL, carreLongueurNormaleT, insaLongueurNulleL, insaLongueurNulleT, insaLongueurNormaleL, insaLongueurNormaleT; 
-	protected static BellmanFordAlgorithm bcarreLongueurUneL, bcarreLongueurUneT, binsaLongueurUneL, binsaLongueurUneT, bcarreLongueurNormaleL, bcarreLongueurNormaleT, binsaLongueurNulleL, binsaLongueurNulleT, binsaLongueurNormaleL, binsaLongueurNormaleT;  
+	protected static String mapCarre, mapInsa, mapGua;
+	protected static DijkstraAlgorithm guaLongueurNulle_L,guaLongueurNulle_T, insaLongueurUne_L, insaLongueurUne_T, carreLongueurUne_L, carreLongueurUne_T, carreLongueurNormale_L, carreLongueurNormale_T, insaLongueurNulle_L, insaLongueurNulle_T, insaLongueurNormale_L, insaLongueurNormale_T;
+	protected static AStarAlgorithm guaLongueurNulleL,guaLongueurNulleT,carreLongueurUneL, carreLongueurUneT, insaLongueurUneL, insaLongueurUneT, carreLongueurNormaleL, carreLongueurNormaleT, insaLongueurNulleL, insaLongueurNulleT, insaLongueurNormaleL, insaLongueurNormaleT; 
+	protected static BellmanFordAlgorithm bguaLongueurNulle_L, bguaLongueurNulle_T,bcarreLongueurUneL, bcarreLongueurUneT, binsaLongueurUneL, binsaLongueurUneT, bcarreLongueurNormaleL, bcarreLongueurNormaleT, binsaLongueurNulleL, binsaLongueurNulleT, binsaLongueurNormaleL, binsaLongueurNormaleT;  
 	
 	@BeforeClass
 	public static void init() throws IOException {
 		//chargement des chemins des cartes
 		mapCarre = "C:\\Users\\elise\\OneDrive\\Bureau\\ELISE\\INSA\\3A\\GRAPHES\\Maps\\carre.mapgr";
 		mapInsa = "C:\\Users\\elise\\OneDrive\\Bureau\\ELISE\\INSA\\3A\\GRAPHES\\Maps\\insa.mapgr";
+		mapGua = "C:\\Users\\elise\\OneDrive\\Bureau\\ELISE\\INSA\\3A\\GRAPHES\\Maps\\guadeloupe.mapgr";
 		
 		//creation des reader pour lire les cartes
 		final GraphReader readCarre = new BinaryGraphReader(new DataInputStream(new BufferedInputStream(new FileInputStream(mapCarre))));
 		final GraphReader readInsa = new BinaryGraphReader(new DataInputStream(new BufferedInputStream(new FileInputStream(mapInsa))));
-		
+		final GraphReader readGua = new BinaryGraphReader(new DataInputStream(new BufferedInputStream(new FileInputStream(mapGua))));
 		
 		//on lit les cartes et on recupere les infos dans graph
 		final Graph carre = readCarre.read();
 		final Graph insa = readInsa.read();
+		final Graph gua = readGua.read();
 		
 		//fermeture des reader
 		readCarre.close();
 		readInsa.close();
+		readGua.close();
 		
 		//recuperation des arc inspector
 		final ArcInspector length = ArcInspectorFactory.getAllFilters().get(0);
@@ -71,8 +74,11 @@ public class ShortestPathTest {
 		final ShortestPathData longueurUneLengthInsa = new ShortestPathData(insa, insa.getNodes().get(1), insa.getNodes().get(1), length);
 		final ShortestPathData longueurUneTimeInsa = new ShortestPathData(insa, insa.getNodes().get(1), insa.getNodes().get(1), time);	
 		
-		//Calcul des chemins via Dijkstra
+		//Pour la carte Guadeloupe
+		final ShortestPathData longueurNulleLengthGua = new ShortestPathData(gua, gua.getNodes().get(15991), gua.getNodes().get(29842), length);
+		final ShortestPathData longueurNulleTimeGua = new ShortestPathData(gua, gua.getNodes().get(15991), gua.getNodes().get(29842), time);
 		
+		//Calcul des chemins via Dijkstra
 		carreLongueurNormale_L = new DijkstraAlgorithm(longueurNormaleLengthCarre);
 		carreLongueurNormale_T = new DijkstraAlgorithm(longueurNormaleTimeCarre);
 		carreLongueurUne_L = new DijkstraAlgorithm(longueurUneLengthCarre);
@@ -82,6 +88,9 @@ public class ShortestPathTest {
 		insaLongueurNormale_T = new DijkstraAlgorithm(longueurNormaleTimeInsa);
 		insaLongueurUne_L = new DijkstraAlgorithm(longueurUneLengthInsa);
 		insaLongueurUne_T = new DijkstraAlgorithm(longueurUneTimeInsa);
+		
+		guaLongueurNulle_L = new DijkstraAlgorithm(longueurNulleLengthGua);
+		guaLongueurNulle_T = new DijkstraAlgorithm(longueurNulleTimeGua);
 		
 		//Calcul des chemins via A*
 		carreLongueurNormaleL = new AStarAlgorithm(longueurNormaleLengthCarre);
@@ -94,6 +103,9 @@ public class ShortestPathTest {
 		insaLongueurUneL = new AStarAlgorithm(longueurUneLengthInsa);
 		insaLongueurUneT = new AStarAlgorithm(longueurUneTimeInsa);
 		
+		guaLongueurNulleL = new AStarAlgorithm(longueurNulleLengthGua);
+		guaLongueurNulleT = new AStarAlgorithm(longueurNulleTimeGua);
+		
 		//Calcul des chemins via Bellman Ford
 		bcarreLongueurNormaleL = new BellmanFordAlgorithm(longueurNormaleLengthCarre);
 		bcarreLongueurNormaleT = new BellmanFordAlgorithm(longueurNormaleTimeCarre);
@@ -104,6 +116,9 @@ public class ShortestPathTest {
 		binsaLongueurNormaleT = new BellmanFordAlgorithm(longueurNormaleTimeInsa);
 		binsaLongueurUneL = new BellmanFordAlgorithm(longueurUneLengthInsa);
 		binsaLongueurUneT = new BellmanFordAlgorithm(longueurUneTimeInsa);
+		
+		bguaLongueurNulle_L = new BellmanFordAlgorithm(longueurNulleLengthGua);
+		bguaLongueurNulle_T = new BellmanFordAlgorithm(longueurNulleTimeGua);
 	}
 	
 	@Test
@@ -113,6 +128,14 @@ public class ShortestPathTest {
 		assertTrue(carreLongueurNormale_T.run().getPath().isValid());
 		assertTrue(insaLongueurNormale_L.run().getPath().isValid());
 		assertTrue(insaLongueurNormale_T.run().getPath().isValid());
+		
+		assertTrue(carreLongueurUne_L.run().getPath().isValid());
+		assertTrue(carreLongueurUne_T.run().getPath().isValid());
+		assertTrue(insaLongueurUne_L.run().getPath().isValid());
+		assertTrue(insaLongueurUne_T.run().getPath().isValid());
+		
+		assertTrue(guaLongueurNulle_L.run().getPath().isValid());
+		assertTrue(guaLongueurNulle_T.run().getPath().isValid());
 	}
 	@Test
 	public void testIsValidAStar() {
@@ -121,6 +144,14 @@ public class ShortestPathTest {
 		assertTrue(carreLongueurNormaleT.run().getPath().isValid());
 		assertTrue(insaLongueurNormaleL.run().getPath().isValid());
 		assertTrue(insaLongueurNormaleT.run().getPath().isValid());
+		
+		assertTrue(carreLongueurUneL.run().getPath().isValid());
+		assertTrue(carreLongueurUneT.run().getPath().isValid());
+		assertTrue(insaLongueurUneL.run().getPath().isValid());
+		assertTrue(insaLongueurUneT.run().getPath().isValid());
+		
+		assertTrue(guaLongueurNulleL.run().getPath().isValid());
+		assertTrue(guaLongueurNulleT.run().getPath().isValid());
 	}
 		
 	@Test
@@ -150,6 +181,15 @@ public class ShortestPathTest {
 		//Dijkstra et Bellman 
 		assertEquals(insaLongueurNormale_T.run().getPath().getMinimumTravelTime(), binsaLongueurNormaleT.run().getPath().getMinimumTravelTime(),0);
 		
+		assertEquals(carreLongueurUne_L.run().getPath().getLength(), 0,0);
+		assertEquals(carreLongueurUne_T.run().getPath().getLength(), 0,0);
+		assertEquals(insaLongueurUne_L.run().getPath().getLength(), 0,0);
+		assertEquals(insaLongueurUne_T.run().getPath().getLength(), 0,0);
+		
+		assertEquals(carreLongueurUneL.run().getPath().getLength(), 0,0);
+		assertEquals(carreLongueurUneT.run().getPath().getLength(), 0,0);
+		assertEquals(insaLongueurUneL.run().getPath().getLength(), 0,0);
+		assertEquals(insaLongueurUneT.run().getPath().getLength(), 0,0);
 	}
 	
 	@Test
@@ -164,11 +204,11 @@ public class ShortestPathTest {
 		assertEquals(carreLongueurNormaleT.run().getStatus(), Status.OPTIMAL);
 		//longueur 1 carre
 		//Dijkstra
-		assertEquals(carreLongueurUne_L.run().getStatus(), Status.INFEASIBLE);
-		assertEquals(carreLongueurUne_T.run().getStatus(), Status.INFEASIBLE);
+		assertEquals(carreLongueurUne_L.run().getStatus(), Status.OPTIMAL);
+		assertEquals(carreLongueurUne_T.run().getStatus(), Status.OPTIMAL);
 		//A*
-		assertEquals(carreLongueurUneL.run().getStatus(), Status.INFEASIBLE);
-		assertEquals(carreLongueurUneT.run().getStatus(), Status.INFEASIBLE);
+		assertEquals(carreLongueurUneL.run().getStatus(), Status.OPTIMAL);
+		assertEquals(carreLongueurUneT.run().getStatus(), Status.OPTIMAL);
 		//longueur normale insa 
 		//Dijkstra
 		assertEquals(insaLongueurNormale_L.run().getStatus(), Status.OPTIMAL);
@@ -178,13 +218,18 @@ public class ShortestPathTest {
 		assertEquals(insaLongueurNormaleT.run().getStatus(), Status.OPTIMAL);
 		//longueur 1 insa
 		//Dijkstra
-		assertEquals(insaLongueurUne_L.run().getStatus(), Status.INFEASIBLE);
-		assertEquals(insaLongueurUne_T.run().getStatus(), Status.INFEASIBLE);
+		assertEquals(insaLongueurUne_L.run().getStatus(), Status.OPTIMAL);
+		assertEquals(insaLongueurUne_T.run().getStatus(), Status.OPTIMAL);
 		//A*
-		assertEquals(insaLongueurUneL.run().getStatus(), Status.INFEASIBLE);
-		assertEquals(insaLongueurUneT.run().getStatus(), Status.INFEASIBLE);
-		
-		
+		assertEquals(insaLongueurUneL.run().getStatus(), Status.OPTIMAL);
+		assertEquals(insaLongueurUneT.run().getStatus(), Status.OPTIMAL);
+		//Longueur nulle gua
+		//Dijkstra
+		assertEquals(guaLongueurNulle_L.run().getStatus(), Status.INFEASIBLE);
+		assertEquals(guaLongueurNulle_T.run().getStatus(), Status.INFEASIBLE);
+		//A*
+		assertEquals(guaLongueurNulleL.run().getStatus(), Status.INFEASIBLE);
+		assertEquals(guaLongueurNulleT.run().getStatus(), Status.INFEASIBLE);
 		
 	}
 }
